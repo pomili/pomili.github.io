@@ -2,7 +2,10 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export const site = {
   name: 'pomili',
-  title: 'pomili — 写一点，想一点',
+  title: 'pomili 的空间',
+  subtitle: 'A LITTLE SPACE FOR THOUGHTS AND DISCOVERIES',
+  avatar: 'images/avatar.svg',
+  banners: { desktop: 'images/banner.svg', tablet: 'images/banner-tablet.svg', mobile: 'images/banner-mobile.svg' },
   description: 'pomili 的个人空间。记录想法，分享笔记，让细小的思考有处安放。',
   language: 'zh-CN',
 };

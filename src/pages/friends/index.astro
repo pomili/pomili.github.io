@@ -1,0 +1,12 @@
+---
+import InteriorPage from '../../components/InteriorPage.astro';
+import { pathTo } from '../../lib/site';
+---
+<InteriorPage title="友情链接" kicker="FRIENDS / CONNECTIONS" description="互联网很大，为值得再访的小站留一个位置。">
+  <section class="empty-state" aria-labelledby="friends-empty">
+    <span class="empty-state-code" aria-hidden="true">NO LINKS YET</span>
+    <h2 id="friends-empty">这里还没有友情链接</h2>
+    <p>友链列表暂时为空。以后有了想分享的小站，再认真介绍给你。</p>
+    <div class="empty-state-actions"><a class="button" href={pathTo('posts/')}>先读一篇文章 <span aria-hidden="true">↗</span></a></div>
+  </section>
+</InteriorPage>

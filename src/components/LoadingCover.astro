@@ -1,0 +1,8 @@
+---
+import { pathTo, site } from '../lib/site';
+---
+<div class="loading-cover" id="loading-cover" hidden aria-hidden="true">
+  <div class="loading-rail"><div class="loading-fill"></div><div class="loading-info"><span class="loading-percent">0%</span><span class="loading-status">INITIALIZING</span></div></div>
+  <div class="loading-identity"><img src={pathTo(site.avatar)} alt="" width="240" height="240" /><span>{site.title}</span></div>
+  <div class="loading-sweep"></div>
+</div>

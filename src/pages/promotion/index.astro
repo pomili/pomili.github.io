@@ -1,0 +1,12 @@
+---
+import InteriorPage from '../../components/InteriorPage.astro';
+import { pathTo } from '../../lib/site';
+---
+<InteriorPage title="推广" kicker="PROMOTION / DISCLOSURE" description="推荐与合作信息，在这里清楚说明。">
+  <section class="empty-state" aria-labelledby="promotion-empty">
+    <span class="empty-state-code" aria-hidden="true">NOTHING TO PROMOTE</span>
+    <h2 id="promotion-empty">暂无推广内容</h2>
+    <p>目前没有商业推广、赞助或合作项目可展示。这里不会放置虚构的推荐与合作信息。</p>
+    <div class="empty-state-actions"><a class="button" href={pathTo('posts/')}>返回文章列表 <span aria-hidden="true">↗</span></a></div>
+  </section>
+</InteriorPage>

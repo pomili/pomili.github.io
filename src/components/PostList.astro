@@ -1,19 +1,25 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { formatDate, postPath, readingTime } from '../lib/site';
+import { formatDate, postPath } from '../lib/site';
 import Icon from './Icon.astro';
+
 interface Props { posts: CollectionEntry<'blog'>[]; }
 const { posts } = Astro.props;
 ---
 <ul class="post-list">
-  {posts.map((post, index) => <li class="post-row">
-    <span class="post-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-    <a class="post-link" href={postPath(post)}>
-      <div class="post-meta"><span class="post-tag">{post.data.tags[0] || '随笔'}</span><time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time></div>
-      <h3>{post.data.title}</h3>
-      <p>{post.data.description}</p>
-      <span class="read-time">约 {readingTime(post.body)} 分钟阅读</span>
-      <span class="post-arrow"><Icon name="arrow" /></span>
+  {posts.map((post) => <li class="post-card">
+    <a class="post-link" href={postPath(post)} data-post-link>
+      <div class="post-card-content">
+        <div class="post-meta">
+          <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate).replaceAll('.', '-')}</time>
+        </div>
+        <h2 class="post-title">{post.data.title}</h2>
+        <p class="post-summary">{post.data.description}</p>
+        {post.data.tags.length > 0 && <div class="post-tags">
+          {post.data.tags.slice(0, 3).map((tag) => <span class="post-tag">#{tag}</span>)}
+        </div>}
+      </div>
+      <span class="post-visit">访问 <span class="post-arrow"><Icon name="arrow" size={18} /></span></span>
     </a>
   </li>)}
 </ul>

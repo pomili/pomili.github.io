@@ -1,44 +1,26 @@
 ---
-import { pathTo } from '../lib/site';
+import { pathTo, site } from '../lib/site';
+import { navigation } from '../lib/navigation';
 import Icon from './Icon.astro';
 const current = Astro.url.pathname;
-const items = [{ label: '首页', path: '' }, { label: '文章', path: 'blog/' }, { label: '关于', path: 'about/' }];
+function isActive(path: string) {
+  if (!path) return current === pathTo();
+  if (path === 'posts/') return current.startsWith(pathTo('posts/')) || current.startsWith(pathTo('blog/'));
+  if (path === 'aboutme/') return current.startsWith(pathTo('aboutme/')) || current.startsWith(pathTo('about/'));
+  return current.startsWith(pathTo(path));
+}
 ---
-<header class="site-header shell">
-  <a class="brand" href={pathTo()} aria-label="pomili 首页"><span class="brand-mark" aria-hidden="true">p<span></span></span><span>pomili<span class="brand-dot">.</span></span></a>
-  <div class="header-right">
-    <nav aria-label="主导航">
-      {items.map(({ label, path }) => {
-        const active = path ? current.startsWith(pathTo(path)) : current === pathTo();
-        return <a href={pathTo(path)} aria-current={active ? 'page' : undefined}>{label}</a>;
-      })}
-    </nav>
-    <span class="header-divider" aria-hidden="true"></span>
-    <button class="theme-toggle" type="button" aria-label="切换深浅色" aria-pressed="false" title="切换深浅色" hidden>
-      <span class="theme-moon"><Icon name="moon" size={18} /></span><span class="theme-sun"><Icon name="sun" size={18} /></span>
-    </button>
-  </div>
-</header>
-<script>
-  const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
-  const sync = () => button?.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
-  if (button) {
-    button.hidden = false;
-    sync();
-    button.addEventListener('click', () => {
-      const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = theme;
-      try { localStorage.setItem('pomili-theme', theme); } catch {}
-      sync();
-    });
-    media.addEventListener('change', (event) => {
-      let saved = null;
-      try { saved = localStorage.getItem('pomili-theme'); } catch {}
-      if (saved !== 'light' && saved !== 'dark') {
-        document.documentElement.dataset.theme = event.matches ? 'dark' : 'light';
-        sync();
-      }
-    });
-  }
-</script>
+<aside class="sidenav" id="sidenav" aria-label="侧边导航">
+  <div class="sidebar-profile"><a class="avatar-link" href={pathTo('posts/')} aria-label="pomili 的文章"><img src={pathTo(site.avatar)} alt="pomili" width="64" height="64" /></a><a class="sidebar-name" href={pathTo('posts/')}>{site.title}</a></div>
+  <nav class="sidebar-items" aria-label="主导航">
+    {navigation.map((item) => <a class="sidebar-item" href={pathTo(item.path)} data-nav={item.path} aria-current={isActive(item.path) ? 'page' : undefined}><span class="nav-icon"><Icon name={item.icon} /></span><span class="nav-label">{item.label}</span></a>)}
+  </nav>
+  <div class="sidebar-social"><a href="https://github.com/pomili" aria-label="pomili 的 GitHub" target="_blank" rel="noopener noreferrer"><Icon name="github" size={18} /></a></div>
+  <button class="sidebar-toggle" type="button" aria-label="展开侧边导航" aria-expanded="false"><span aria-hidden="true">▶</span></button>
+</aside>
+<header class="mobile-header"><a class="mobile-avatar" href={pathTo('posts/')} aria-label="pomili 的文章"><img src={pathTo(site.avatar)} alt="pomili" width="40" height="40" /></a><button class="menu-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false" aria-controls="mobile-menu"><span class="menu-open-icon"><Icon name="menu" size={28} /></span><span class="menu-close-icon"><Icon name="close" size={28} /></span></button></header>
+<div class="mobile-backdrop" hidden></div>
+<nav class="mobile-menu" id="mobile-menu" aria-label="手机导航" inert>
+  {navigation.map((item) => <a class="mobile-item" href={pathTo(item.path)} data-nav={item.path} aria-current={isActive(item.path) ? 'page' : undefined}><Icon name={item.icon} /><span>{item.label}</span></a>)}
+  <div class="mobile-social"><a href="https://github.com/pomili" aria-label="pomili 的 GitHub" target="_blank" rel="noopener noreferrer"><Icon name="github" /></a><span>pomili</span></div>
+</nav>

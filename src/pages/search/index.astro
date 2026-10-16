@@ -1,0 +1,18 @@
+---
+import InteriorPage from '../../components/InteriorPage.astro';
+import { pathTo } from '../../lib/site';
+---
+<InteriorPage title="搜索" kicker="SEARCH / NOTES" description="在文章标题、摘要、标签与正文中查找关键词。" class="search-page" noindex>
+  <div data-search data-index-url={pathTo('search-index.json')}>
+    <form class="search-form" action={pathTo('search/')} method="get" role="search">
+      <label class="search-label" for="site-search">想找些什么？</label>
+      <div class="search-controls">
+        <input class="search-input" id="site-search" name="q" type="search" placeholder="输入关键词…" autocomplete="off" data-search-input aria-controls="search-results" aria-describedby="search-status" />
+        <button class="search-submit button button-primary" type="submit">搜索 <span aria-hidden="true">↗</span></button>
+      </div>
+    </form>
+    <p class="search-status" id="search-status" data-search-status role="status" aria-live="polite">输入关键词，开始搜索。</p>
+    <ul class="search-results post-list" id="search-results" data-search-results aria-label="搜索结果"></ul>
+    <noscript><p>站内搜索需要启用 JavaScript。你也可以浏览<a class="text-link" href={pathTo('posts/')}>全部文章</a>，或按<a class="text-link" href={pathTo('tags/')}>标签</a>查找内容。</p></noscript>
+  </div>
+</InteriorPage>

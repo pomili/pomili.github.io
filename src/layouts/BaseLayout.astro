@@ -1,18 +1,25 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import LoadingCover from '../components/LoadingCover.astro';
+import FloatingControls from '../components/FloatingControls.astro';
 import { site, pathTo } from '../lib/site';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/inter/900.css';
+import '@fontsource/jetbrains-mono/400.css';
 import '../styles/global.css';
-interface Props { title?: string; description?: string; article?: boolean; noindex?: boolean; }
-const { title, description = site.description, article = false, noindex = false } = Astro.props;
+interface Props { title?: string; description?: string; article?: boolean; noindex?: boolean; home?: boolean; canonicalPath?: string; }
+const { title, description = site.description, article = false, noindex = false, home = false, canonicalPath } = Astro.props;
 const pageTitle = title ? `${title} — pomili` : site.title;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const canonical = new URL(canonicalPath !== undefined ? pathTo(canonicalPath) : Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
 <html lang={site.language}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <script is:inline>
       (() => {
@@ -38,10 +45,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary" />
     <meta name="generator" content={Astro.generator} />
   </head>
-  <body>
-    <a class="skip-link" href="#main">跳转到正文</a>
+  <body class:list={{ 'is-home': home }}>
+    <noscript><style>.mobile-menu[inert]{display:none}.nojs-navigation{display:flex;flex-wrap:wrap;gap:.75rem;padding:4.5rem 1rem 1rem;background:var(--surface)}@media(min-width:768px){.nojs-navigation{display:none}}</style><nav class="nojs-navigation" aria-label="无脚本导航"><a href={pathTo()}>首页</a><a href={pathTo('posts/')}>文章</a><a href={pathTo('tags/')}>标签</a><a href={pathTo('archives/')}>归档</a><a href={pathTo('aboutme/')}>关于</a><a href={pathTo('friends/')}>友链</a><a href={pathTo('promotion/')}>推广</a><a href={pathTo('search/')}>搜索</a></nav></noscript>
+    <a class="skip-link" href="#main" data-no-swup>跳转到正文</a>
     <Header />
-    <main id="main" tabindex="-1"><slot /></main>
-    <Footer />
+    <div id="swup-main" class:list={['site-main', 'transition-page', { 'is-home': home }]} data-home={home ? 'true' : 'false'}>
+      <div class="page-composition"><main id="main" tabindex="-1"><slot /></main><Footer /></div>
+    </div>
+    <FloatingControls />
+    <LoadingCover />
+    <script>
+      import '../scripts/site';
+    </script>
   </body>
 </html>

@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteriorBanner from './InteriorBanner.astro';
+import { pathTo } from '../lib/site';
+
+interface Breadcrumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  title: string;
+  description?: string;
+  kicker?: string;
+  breadcrumbs?: Breadcrumb[];
+  canonicalPath?: string;
+  noindex?: boolean;
+  class?: string;
+}
+const {
+  title,
+  description,
+  kicker,
+  breadcrumbs = [{ label: '首页', href: pathTo() }, { label: title }],
+  canonicalPath,
+  noindex = false,
+  class: className,
+} = Astro.props;
+---
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} noindex={noindex}>
+  <InteriorBanner />
+  <div class:list={['interior-page', className, { 'list-index': kicker === 'POSTS / INDEX', 'archive-index': kicker === 'ARCHIVES / TIMELINE', 'tags-index': kicker === 'TAGS / INDEX' }]}>
+    <div class="page-width">
+      <nav class="breadcrumbs" aria-label="面包屑导航">
+        <ol>
+          {breadcrumbs.map((crumb, index) => <li>
+            {crumb.href && index < breadcrumbs.length - 1
+              ? <a href={crumb.href}>{crumb.label}</a>
+              : <span aria-current={index === breadcrumbs.length - 1 ? 'page' : undefined}>{crumb.label}</span>}
+          </li>)}
+        </ol>
+      </nav>
+      <header class="page-heading">
+        {kicker && <span class="page-heading-kicker">{kicker}</span>}
+        <h1>{title}</h1>
+        {description && <p class="page-heading-description">{description}</p>}
+        {Astro.slots.has('meta') && <div class="page-heading-meta"><slot name="meta" /></div>}
+      </header>
+      <div class="page-body"><slot /></div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,28 @@
+---
+import InteriorPage from '../../components/InteriorPage.astro';
+import { getPosts, pathTo } from '../../lib/site';
+
+const counts = new Map<string, number>();
+for (const post of await getPosts()) {
+  for (const tag of new Set(post.data.tags)) counts.set(tag, (counts.get(tag) || 0) + 1);
+}
+const tags = [...counts].sort(([a, ac], [b, bc]) => bc - ac || a.localeCompare(b, 'zh-CN'));
+const groups = [
+  { label: '常用', style: 'frequent', entries: tags.filter(([, count]) => count >= 4) },
+  { label: '普通', style: 'regular', entries: tags.filter(([, count]) => count >= 2 && count < 4) },
+  { label: '稀有', style: 'rare', entries: tags.filter(([, count]) => count === 1) },
+];
+---
+<InteriorPage title="全部标签" kicker="TAGS / INDEX" description="用标签串起相关的文字，找到同一个想法的不同切面。">
+  <div class="tags-panel">
+    <h2 aria-hidden="true">全部标签</h2>
+    {tags.length > 0 ? groups.filter((group) => group.entries.length).map((group) => <section class:list={['tag-group', group.style]} aria-label={group.label}>
+      <h3>{group.label}</h3>
+      <div class="tag-cloud">
+        {group.entries.map(([tag, count]) => <a class="tag-chip" href={pathTo(`tags/${encodeURIComponent(tag)}/`)}>
+          <span>#{tag}</span><span class="tag-count">{count}<span class="sr-only"> 篇文章</span></span>
+        </a>)}
+      </div>
+    </section>) : <p class="empty-state">暂时还没有标签。</p>}
+  </div>
+</InteriorPage>

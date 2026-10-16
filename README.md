@@ -2,7 +2,7 @@
 
 pomili 的个人小站。
 
-简洁清爽的个人主页与 Markdown 博客。使用 Astro、TypeScript 和原生 CSS，静态生成，无数据库，不加载外部字体或追踪脚本。
+参考布局风格的个人主页与 Markdown 博客：全屏背景首页、可展开侧边栏、移动端菜单、文章卡片，以及右下角的目录 / 回顶 / 深浅色工具。使用 Astro、TypeScript 和原生 CSS，静态生成，无数据库；字体随站点自托管，不加载远程字体服务或追踪脚本。
 
 ## 本地运行
 
@@ -44,22 +44,60 @@ draft: false
 ```
 
 - 用实际发布日期替换示例日期，文章按日期倒序排列。
-- 文件名决定 URL，建议使用 `a-short-note.md` 这样的名字，发布后尽量不改。
-- `draft: true` 会从页面、列表、RSS 和站点地图中排除该文章。**公开仓库内的草稿源码仍然公开，不要提交私人内容。**
-- 网站附带两篇明确的初始介绍/使用说明，可以修改、删除或设为草稿。
+- 文件名决定文章 URL，例如 `a-short-note.md` 对应 `/blog/a-short-note/`（项目部署时还会加上 `SITE_BASE` 前缀），发布后尽量不改。
+- `draft: true` 会从文章页面、列表、标签、归档、RSS、站点地图和搜索索引中排除该文章。**公开仓库内的草稿源码仍然公开，不要提交私人内容。**
+- 网站附带初始介绍/使用说明，可以修改、改名、删除或设为草稿；静态测试不会要求保留特定初始文章或篇数。
+- 文章正文建议从 `##` 开始，页面自动生成标题与目录；右下角目录按钮会展示正文标题。站内搜索使用构建时生成的 `search-index.json`，只收录已发布文章的标题、摘要、标签和纯文本正文。
 - 同一篇文章中的标题链接可用 `#标题锚点`。跨文章链接可用 `../hello-world/` 这样的相对网址；不要写死域名或项目仓库前缀。
 - Markdown 图片可放在文章附近，通过相对路径引用，交由 Astro 处理；不要在正文里假设站点永远部署在 `/`。
 
-## 修改个人资料和样式
+## 导航与页面切换
 
-- 站点标题、简介：`src/lib/site.ts`
-- 首页与原创植物插画：`src/pages/index.astro`
-- 关于页面：`src/pages/about.astro`
-- 配色、字体、布局：`src/styles/global.css`
-- 图标：`public/favicon.svg`
-- 文章布局：`src/layouts/PostLayout.astro`
+`src/lib/navigation.ts` 定义桌面与移动端共用的八个导航入口：
+
+| 页面 | 路径 |
+| --- | --- |
+| 首页 | `/` |
+| 文章 | `/posts/` |
+| 标签 | `/tags/` |
+| 归档 | `/archives/` |
+| 关于 | `/aboutme/` |
+| 友链 | `/friends/` |
+| 推广 | `/promotion/` |
+| 搜索 | `/search/` |
+
+这些路径均通过 `pathTo()` 添加部署前缀。旧的 `/blog/` 列表和 `/about/` 页面仍可访问，canonical 分别指向 `/posts/` 和 `/aboutme/`，站点地图不重复收录这两个兼容入口。文章本身继续使用 `/blog/<文章 ID>/`，旧文章链接无需迁移。友链与推广页目前是明确的空状态，不会虚构合作或推荐内容。
+
+`src/scripts/site.ts` 使用 Swup 及其 Head 插件，在站内切换时替换 `#swup-main` 并更新标题、元数据与 canonical；侧边栏、移动导航和浮动工具保留。每次切换后重新绑定搜索、目录与滚动状态，并清理上一页监听器。首次加载遮罩有超时保护，禁用 JavaScript 时默认隐藏；所有页面本身都是静态 HTML，普通链接仍可直接访问（交互式搜索、菜单与主题按钮需要 JavaScript）。减弱动态效果偏好会关闭或缩短动画。
+
+## 修改个人资料、图片和样式
+
+- 站点标题、简介、头像与响应式背景路径：`src/lib/site.ts`
+- 首页布局：`src/pages/index.astro`
+- 导航入口：`src/lib/navigation.ts`；导航外壳：`src/components/Header.astro`
+- 关于内容：`src/components/AboutContent.astro`；主入口：`src/pages/aboutme/index.astro`
+- 配色、字体回退、布局和响应式断点：`src/styles/global.css`
+- 图标：`public/favicon.svg`；文章布局与目录模板：`src/layouts/PostLayout.astro`
+- 主题、导航、加载与搜索交互：`src/scripts/site.ts`
+
+当前图片是仓库内的 **SVG 占位插画，不是真正 AI 生成的位图 / 栅格图片，也不是参考站的原始素材**。默认路径对应如下：
+
+| `site.ts` 配置项 | 占位文件 |
+| --- | --- |
+| `avatar` | `public/images/avatar.svg` |
+| `banners.desktop` | `public/images/banner.svg` |
+| `banners.tablet` | `public/images/banner-tablet.svg` |
+| `banners.mobile` | `public/images/banner-mobile.svg` |
+
+替换时把有权使用的图片放在 `public/images/`，并更新 `site.ts` 中相应的 `images/...` 路径（不加 `public/`、域名或部署前缀）；`pathTo()` 会处理根路径或项目子路径。可以换成 JPG、WebP、PNG 等图片，建议分别为桌面、平板和手机准备合适裁切。替换占位图并不会自动生成新图片，请自行准备素材并确认授权。
 
 没有预设未经确认的个人履历、项目或联系邮箱；如需添加，请填入自己的真实资料。
+
+## 字体与授权
+
+Inter 用于西文界面文字，JetBrains Mono 用于代码与技术风格标签；中文按系统字体回退。字体通过 `@fontsource/inter` 与 `@fontsource/jetbrains-mono` 在构建时打包到本站 `_astro/`，不向 Google Fonts 或其他字体 CDN 请求资源。
+
+两款字体均使用 **SIL Open Font License 1.1**。随站发布的完整版权和授权文本在 `public/licenses/inter.txt` 与 `public/licenses/jetbrains-mono.txt`（上线后为 `/licenses/inter.txt` 与 `/licenses/jetbrains-mono.txt`，项目站需加部署前缀）。重新分发字体时请保留这些声明；如修改字体，还需遵守 OFL 的保留字体名称等条件。自备图片或替换字体应另行确认其授权，不能用字体授权代替素材授权。
 
 ## 部署到 GitHub Pages
 

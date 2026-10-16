@@ -2,7 +2,8 @@
 import { pathTo } from '../lib/site';
 import Icon from './Icon.astro';
 ---
-<footer class="site-footer shell">
-  <div class="footer-top"><a class="footer-wordmark" href={pathTo()}>pomili<span>.</span></a><p>小小的空间，慢慢地生长。</p><a class="rss-link" href={pathTo('rss.xml')}><Icon name="rss" size={15} /> RSS 订阅</a></div>
-  <div class="footer-bottom"><span>© {new Date().getFullYear()} pomili</span><span>用文字记录 · 用好奇连接</span><a href="https://astro.build/" target="_blank" rel="noopener noreferrer">Built with Astro ↗</a></div>
+<footer class="site-footer">
+  <div class="footer-spectrum" aria-hidden="true"></div>
+  <div class="footer-links"><a href={pathTo('rss.xml')}><Icon name="rss" size={12} /> RSS</a><a href={pathTo('sitemap-index.xml')}><Icon name="sitemap" size={12} /> SITEMAP</a></div>
+  <div class="footer-copyright"><span>© {new Date().getFullYear()} pomili</span><span class="footer-credit">·　由 Astro 驱动</span><span>·　记录想法与发现</span></div>
 </footer>

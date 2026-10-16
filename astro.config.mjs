@@ -10,7 +10,7 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap({ filter: (page) => !page.endsWith('/404/') })],
+  integrations: [sitemap({ filter: (page) => !['/404/', '/404.html', '/blog/', '/about/'].some((suffix) => page.endsWith(suffix)) })],
   markdown: {
     shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' } },
   },

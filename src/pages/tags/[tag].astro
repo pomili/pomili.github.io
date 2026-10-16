@@ -1,0 +1,26 @@
+---
+import InteriorPage from '../../components/InteriorPage.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts, pathTo } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((post) => post.data.tags.includes(tag)) },
+  }));
+}
+const { tag, posts } = Astro.props;
+---
+<InteriorPage title={`标签：${tag}`} kicker="TAGS / FILTER" description={`与「${tag}」有关的文章与笔记。`} breadcrumbs={[
+  { label: '首页', href: pathTo() },
+  { label: '标签', href: pathTo('tags/') },
+  { label: tag },
+]}>
+  <div class="listing-toolbar">
+    <span>共 {posts.length} 篇文章</span>
+    <a class="text-link" href={pathTo('tags/')}><span aria-hidden="true">←</span> 所有标签</a>
+  </div>
+  <PostList posts={posts} />
+</InteriorPage>

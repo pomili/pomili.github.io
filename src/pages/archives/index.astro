@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import InteriorPage from '../../components/InteriorPage.astro';
+import { formatDate, getPosts, postPath } from '../../lib/site';
+
+const posts = await getPosts();
+const months = new Map<string, CollectionEntry<'blog'>[]>();
+for (const post of posts) {
+  const month = post.data.pubDate.toISOString().slice(0, 7);
+  const group = months.get(month) || [];
+  group.push(post);
+  months.set(month, group);
+}
+---
+<InteriorPage title="归档" kicker="ARCHIVES / TIMELINE" description="沿着时间翻阅，把散落的记录重新连在一起。">
+  <div class="listing-toolbar"><span>共 {posts.length} 篇文章</span></div>
+  {months.size > 0 ? <div class="archive-list">
+    {[...months].map(([month, entries]) => <section class="archive-group" aria-labelledby={`month-${month}`}>
+      <h2 class="archive-month" id={`month-${month}`}>
+        <span class="archive-watermark" aria-hidden="true">LOG_{month.slice(0, 4)}</span>
+        <time datetime={month}>{month}</time><span class="archive-count">// {entries.length}条记录已找到</span>
+        <span class="archive-status">状态： 已归档</span>
+      </h2>
+      <ol class="archive-posts">
+        {entries.map((post) => <li>
+          <a class="archive-post-link" href={postPath(post)} data-post-link>
+            <time datetime={post.data.pubDate.toISOString()}>[{formatDate(post.data.pubDate).replaceAll('.', '-')}]</time>
+            <span class="archive-text"><span class="archive-title">{post.data.title}</span><span class="archive-tags">{post.data.tags.map((tag) => `#${tag}`).join('　')}</span></span>
+            <span class="archive-arrow" aria-hidden="true">&gt;&gt; 日志访问</span>
+          </a>
+        </li>)}
+      </ol>
+    </section>)}
+  </div> : <div class="empty-state"><p>时间轴还是空的，等待第一篇记录。</p></div>}
+</InteriorPage>
