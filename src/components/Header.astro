@@ -1,0 +1,44 @@
+---
+import { pathTo } from '../lib/site';
+import Icon from './Icon.astro';
+const current = Astro.url.pathname;
+const items = [{ label: '首页', path: '' }, { label: '文章', path: 'blog/' }, { label: '关于', path: 'about/' }];
+---
+<header class="site-header shell">
+  <a class="brand" href={pathTo()} aria-label="pomili 首页"><span class="brand-mark" aria-hidden="true">p<span></span></span><span>pomili<span class="brand-dot">.</span></span></a>
+  <div class="header-right">
+    <nav aria-label="主导航">
+      {items.map(({ label, path }) => {
+        const active = path ? current.startsWith(pathTo(path)) : current === pathTo();
+        return <a href={pathTo(path)} aria-current={active ? 'page' : undefined}>{label}</a>;
+      })}
+    </nav>
+    <span class="header-divider" aria-hidden="true"></span>
+    <button class="theme-toggle" type="button" aria-label="切换深浅色" aria-pressed="false" title="切换深浅色" hidden>
+      <span class="theme-moon"><Icon name="moon" size={18} /></span><span class="theme-sun"><Icon name="sun" size={18} /></span>
+    </button>
+  </div>
+</header>
+<script>
+  const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const sync = () => button?.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
+  if (button) {
+    button.hidden = false;
+    sync();
+    button.addEventListener('click', () => {
+      const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      try { localStorage.setItem('pomili-theme', theme); } catch {}
+      sync();
+    });
+    media.addEventListener('change', (event) => {
+      let saved = null;
+      try { saved = localStorage.getItem('pomili-theme'); } catch {}
+      if (saved !== 'light' && saved !== 'dark') {
+        document.documentElement.dataset.theme = event.matches ? 'dark' : 'light';
+        sync();
+      }
+    });
+  }
+</script>
