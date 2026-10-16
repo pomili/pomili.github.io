@@ -1,4 +1,6 @@
-# pomili 的个人小站
+# pomili.github.io
+
+pomili 的个人小站。
 
 简洁清爽的个人主页与 Markdown 博客。使用 Astro、TypeScript 和原生 CSS，静态生成，无数据库，不加载外部字体或追踪脚本。
 
