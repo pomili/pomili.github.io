@@ -4,7 +4,7 @@ export const site = {
   name: 'pomili',
   title: 'pomili 的空间',
   subtitle: 'A LITTLE SPACE FOR THOUGHTS AND DISCOVERIES',
-  avatar: 'images/avatar.svg',
+  avatar: 'images/logo.png',
   banners: { desktop: 'images/banner.svg', tablet: 'images/banner-tablet.svg', mobile: 'images/banner-mobile.svg' },
   description: 'pomili 的个人空间。记录想法，分享笔记，让细小的思考有处安放。',
   language: 'zh-CN',

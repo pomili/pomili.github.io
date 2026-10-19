@@ -50,6 +50,7 @@ draft: false
 - 文章正文建议从 `##` 开始，页面自动生成标题与目录；右下角目录按钮会展示正文标题。站内搜索使用构建时生成的 `search-index.json`，只收录已发布文章的标题、摘要、标签和纯文本正文。
 - 同一篇文章中的标题链接可用 `#标题锚点`。跨文章链接可用 `../hello-world/` 这样的相对网址；不要写死域名或项目仓库前缀。
 - Markdown 图片可放在文章附近，通过相对路径引用，交由 Astro 处理；不要在正文里假设站点永远部署在 `/`。
+- 支持 LaTeX 数学公式：行内公式用 `$...$`，独立公式用 `$$...$$`，构建时由 KaTeX 静态渲染（字体随站托管，不请求外部资源）。
 
 ## 导航与页面切换
 
@@ -77,14 +78,14 @@ draft: false
 - 导航入口：`src/lib/navigation.ts`；导航外壳：`src/components/Header.astro`
 - 关于内容：`src/components/AboutContent.astro`；主入口：`src/pages/aboutme/index.astro`
 - 配色、字体回退、布局和响应式断点：`src/styles/global.css`
-- 图标：`public/favicon.svg`；文章布局与目录模板：`src/layouts/PostLayout.astro`
+- Logo、头像和浏览器标签图标：`public/images/logo.png`，统一使用 `site.ts` 的 `avatar` 配置；文章布局与目录模板：`src/layouts/PostLayout.astro`
 - 主题、导航、加载与搜索交互：`src/scripts/site.ts`
 
-当前图片是仓库内的 **SVG 占位插画，不是真正 AI 生成的位图 / 栅格图片，也不是参考站的原始素材**。默认路径对应如下：
+Logo 使用 pomili 提供的 PNG 图片，侧栏、移动导航、加载页、关于页和浏览器标签图标共用这一素材。背景仍是仓库内的 **SVG 占位插画，不是真正 AI 生成的位图 / 栅格图片，也不是参考站的原始素材**。当前路径对应如下：
 
-| `site.ts` 配置项 | 占位文件 |
+| `site.ts` 配置项 | 图片文件 |
 | --- | --- |
-| `avatar` | `public/images/avatar.svg` |
+| `avatar` | `public/images/logo.png` |
 | `banners.desktop` | `public/images/banner.svg` |
 | `banners.tablet` | `public/images/banner-tablet.svg` |
 | `banners.mobile` | `public/images/banner-mobile.svg` |

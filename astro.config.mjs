@@ -1,5 +1,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { unified } from '@astrojs/markdown-remark';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // Override these for a different account, project repository, or custom domain.
 const site = process.env.SITE_URL || 'https://pomili.github.io';
@@ -12,6 +15,7 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [sitemap({ filter: (page) => !['/404/', '/404.html', '/blog/', '/about/'].some((suffix) => page.endsWith(suffix)) })],
   markdown: {
+    processor: unified({ remarkPlugins: [remarkMath], rehypePlugins: [[rehypeKatex, { trust: false }]] }),
     shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' } },
   },
 });

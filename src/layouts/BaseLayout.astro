@@ -9,6 +9,7 @@ import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
 import '@fontsource/inter/900.css';
 import '@fontsource/jetbrains-mono/400.css';
+import 'katex/dist/katex.min.css';
 import '../styles/global.css';
 interface Props { title?: string; description?: string; article?: boolean; noindex?: boolean; home?: boolean; canonicalPath?: string; }
 const { title, description = site.description, article = false, noindex = false, home = false, canonicalPath } = Astro.props;
@@ -34,7 +35,7 @@ const canonical = new URL(canonicalPath !== undefined ? pathTo(canonicalPath) : 
     <meta name="author" content="pomili" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href={pathTo('favicon.svg')} />
+    <link rel="icon" type="image/png" sizes="474x474" href={pathTo(site.avatar)} />
     <link rel="alternate" type="application/rss+xml" title="pomili 的文章" href={pathTo('rss.xml')} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />

@@ -12,13 +12,20 @@
     "verify": "npm run check && npm run build && npm test"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.3",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@swup/head-plugin": "^2.3.1",
     "astro": "^7.4.0",
+    "katex": "^0.19.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "swup": "^4.10.0"
+  },
+  "overrides": {
+    "katex": "$katex"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
