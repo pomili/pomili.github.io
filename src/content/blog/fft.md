@@ -1,3 +1,11 @@
+---
+title: '快速傅里叶变换（FFT）'
+description: '从傅里叶变换与 DFT 出发，推导 Cooley-Tukey FFT、蝶形运算与 IFFT，介绍递归和迭代实现，并通过数值算例验证。'
+pubDate: 2026-11-03
+tags: ['FFT', '信号处理', '算法']
+draft: false
+---
+
 # 快速傅里叶变换（FFT）
 
 ```mermaid

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir, readFile, stat } from 'node:fs/promises';
-import { join, relative, resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 
 const dist = resolve('dist');
 const base = `/${(process.env.SITE_BASE || '/').replace(/^\/+|\/+$/g, '')}`.replace(/\/$/, '');
@@ -63,7 +63,7 @@ function localFile(url) {
   const pathname = decodeURIComponent(new URL(url, origin).pathname);
   assert.ok(!base || pathname.startsWith(`${base}/`), `Missing base prefix: ${pathname}`);
   const path = resolve(dist, pathname.slice(base.length).replace(/^\//, ''));
-  assert.ok(path.startsWith(`${dist}/`) || path === dist, `Path escapes dist: ${pathname}`);
+  assert.ok(path.startsWith(`${dist}${sep}`) || path === dist, `Path escapes dist: ${pathname}`);
   return pathname.endsWith('/') ? join(path, 'index.html') : path;
 }
 
